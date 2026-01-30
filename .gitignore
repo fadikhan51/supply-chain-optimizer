@@ -1,0 +1,24 @@
+# General
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Model Files
+*.joblib
+*.pkl
+
+# OS
+.DS_Store
+
+# Environments
+.venv
+env/
+venv/
+ENV/
