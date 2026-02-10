@@ -14,7 +14,7 @@ router = APIRouter()
 async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).filter(User.username == user_in.username))
     if result.scalars().first():
-        throw HTTPException(status_code=400, detail="Username already exists")
+        raise HTTPException(status_code=400, detail="Username already exists")
     
     hashed_pw = get_password_hash(user_in.password)
     db_user = User(
