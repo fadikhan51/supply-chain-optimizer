@@ -42,3 +42,11 @@ async def get_prediction(
     if not prediction:
         raise HTTPException(status_code=404, detail="Product not found")
     return standard_response(data=prediction)
+
+@router.get("/dashboard")
+async def get_dashboard(
+    service: InventoryService = Depends(get_inventory_service),
+    current_user: User = Depends(get_current_user)
+):
+    summary = await service.get_dashboard()
+    return standard_response(data=summary)

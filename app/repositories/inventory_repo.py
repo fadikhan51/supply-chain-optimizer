@@ -17,7 +17,7 @@ class InventoryRepository:
         return result.scalars().first()
 
     async def create_product(self, product_data: ProductCreate):
-        db_product = Product(**product_data.dict())
+        db_product = Product(**product_data.model_dump())
         self.db.add(db_product)
         await self.db.flush()
         # Initialize inventory level
@@ -34,11 +34,27 @@ class InventoryRepository:
         return None
 
     async def add_sales_record(self, sales_data: SalesCreate):
-        db_sales = SalesHistory(**sales_data.dict())
+        db_sales = SalesHistory(**sales_data.model_dump())
         self.db.add(db_sales)
         # Update stock
         await self.update_inventory(sales_data.product_id, -sales_data.quantity)
         return db_sales
+
+    async def get_dashboard_summary(self):
+        # Total products
+        total_products_res = await self.db.execute(select(Product))
+        total_products = len(total_products_res.scalars().all())
+        
+        # Low stock items
+        low_stock_res = await self.db.execute(
+            select(InventoryLevel).filter(InventoryLevel.current_stock <= InventoryLevel.min_stock)
+        )
+        low_stock_items = len(low_stock_res.scalars().all())
+        
+        return {
+            "total_products": total_products,
+            "low_stock_alerts": low_stock_items
+        }
 
     async def get_average_daily_sales(self, product_id: int, days: int = 30):
         # Dummy calculation for now, in real app would use group by date

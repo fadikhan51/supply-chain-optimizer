@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 from typing import Optional, List
 from datetime import datetime
 from app.models.models import UserRole
@@ -13,8 +13,7 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class Token(BaseModel):
     access_token: str
@@ -36,8 +35,7 @@ class InventoryBase(BaseModel):
 class ProductResponse(ProductBase):
     id: int
     inventory: Optional[InventoryBase] = None
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class SalesCreate(BaseModel):
     product_id: int

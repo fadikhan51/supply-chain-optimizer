@@ -12,6 +12,9 @@ class InventoryService:
     async def record_sale(self, sales_data: SalesCreate):
         return await self.repo.add_sales_record(sales_data)
 
+    async def get_dashboard(self):
+        return await self.repo.get_dashboard_summary()
+
     async def get_stockout_prediction(self, product_id: int):
         product = await self.repo.db.get(Product, product_id)
         if not product or not product.inventory:
