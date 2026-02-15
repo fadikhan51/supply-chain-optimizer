@@ -3,11 +3,13 @@ import os
 import numpy as np
 import logging
 
+from app.core.config import settings
+
 logger = logging.getLogger(__name__)
 
 class MLService:
     def __init__(self):
-        self.model_path = os.path.join("ml_models", "supply_chain_model.joblib")
+        self.model_path = settings.MODEL_PATH
         self.model = None
         self.load_model()
 
