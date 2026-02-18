@@ -35,6 +35,13 @@ def train():
     model = RandomForestRegressor(n_estimators=100, random_state=42)
     model.fit(X, y)
     
+    # Evaluation
+    from sklearn.metrics import mean_absolute_error, r2_score
+    y_pred = model.predict(X)
+    mae = mean_absolute_error(y, y_pred)
+    r2 = r2_score(y, y_pred)
+    print(f"Model trained. MAE: {mae:.4f}, R2 Score: {r2:.4f}")
+    
     model_path = os.path.join(os.path.dirname(__file__), 'supply_chain_model.joblib')
     joblib.dump(model, model_path)
     print(f"Model saved to {model_path}")
