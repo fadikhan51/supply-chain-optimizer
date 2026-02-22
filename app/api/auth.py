@@ -12,6 +12,10 @@ router = APIRouter()
 
 @router.post("/register")
 async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
+    """
+    Create a new user account.
+    Validates if the username is already taken before persisting.
+    """
     result = await db.execute(select(User).filter(User.username == user_in.username))
     if result.scalars().first():
         raise HTTPException(status_code=400, detail="Username already exists")
@@ -30,6 +34,10 @@ async def register(user_in: UserCreate, db: AsyncSession = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
+    """
+    Authenticate a user and return a JWT access token.
+    Uses OAuth2 standard password flow.
+    """
     result = await db.execute(select(User).filter(User.username == form_data.username))
     user = result.scalars().first()
     if not user or not verify_password(form_data.password, user.hashed_password):
