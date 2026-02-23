@@ -20,6 +20,10 @@ async def create_product(
     service: InventoryService = Depends(get_inventory_service),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Register a new product in the catalog.
+    Initializes an inventory record with zero stock by default.
+    """
     product = await service.register_product(product_in)
     return standard_response(data={"product_id": product.id, "sku": product.sku})
 
@@ -29,6 +33,10 @@ async def record_sale(
     service: InventoryService = Depends(get_inventory_service),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Log a new sales transaction.
+    Automatically decrements the current stock level for the product.
+    """
     sale = await service.record_sale(sales_in)
     return standard_response(data={"sale_id": sale.id})
 
@@ -38,6 +46,10 @@ async def get_prediction(
     service: InventoryService = Depends(get_inventory_service),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Retrieve AI-driven stockout predictions for a specific product.
+    Returns days until stockout and a status level (critical/stable).
+    """
     prediction = await service.get_stockout_prediction(product_id)
     if not prediction:
         raise HTTPException(status_code=404, detail="Product not found")
@@ -48,5 +60,9 @@ async def get_dashboard(
     service: InventoryService = Depends(get_inventory_service),
     current_user: User = Depends(get_current_user)
 ):
+    """
+    Fetch high-level inventory metrics for the manager dashboard.
+    Includes total product counts and low-stock alert counts.
+    """
     summary = await service.get_dashboard()
     return standard_response(data=summary)
