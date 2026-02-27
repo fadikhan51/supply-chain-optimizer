@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.session import get_db
 from app.core.security import verify_password, create_access_token, get_password_hash
 from app.models.models import User
-from app.schemas.schemas import UserCreate, Token, UserResponse
+from app.schemas.schemas import UserCreate, Token
 from app.helpers.response_helper import standard_response
 from sqlalchemy.future import select
 
