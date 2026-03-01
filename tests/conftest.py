@@ -1,4 +1,3 @@
-import asyncio
 import pytest
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from app.db.session import Base, get_db
@@ -11,13 +10,7 @@ load_dotenv()
 
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL", "postgresql+asyncpg://postgres:postgres@localhost:5433/supply_chain_test")
 
-@pytest.fixture(scope="session")
-def event_loop():
-    loop = asyncio.get_event_loop_policy().new_event_loop()
-    yield loop
-    loop.close()
-
-@pytest.fixture(scope="session")
+@pytest.fixture
 async def test_engine():
     engine = create_async_engine(TEST_DATABASE_URL)
     async with engine.begin() as conn:
@@ -39,6 +32,8 @@ async def client(db_session):
         yield db_session
     
     app.dependency_overrides[get_db] = _get_test_db
-    async with AsyncClient(app=app, base_url="http://test") as ac:
+    from httpx import ASGITransport
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
     app.dependency_overrides.clear()

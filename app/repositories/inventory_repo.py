@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 from app.models.models import Product, InventoryLevel, SalesHistory
 from app.schemas.schemas import ProductCreate, SalesCreate
-from datetime import datetime
 
 class InventoryRepository:
     """Repository for handling all database operations related to inventory and products."""
@@ -14,6 +14,15 @@ class InventoryRepository:
         """Fetch all products from the database."""
         result = await self.db.execute(select(Product))
         return result.scalars().all()
+
+    async def get_product_with_inventory(self, product_id: int):
+        """Fetch a product along with its inventory level using selectinload."""
+        result = await self.db.execute(
+            select(Product)
+            .options(selectinload(Product.inventory))
+            .filter(Product.id == product_id)
+        )
+        return result.scalars().first()
 
     async def get_product_by_sku(self, sku: str):
         """Find a single product by its unique SKU."""

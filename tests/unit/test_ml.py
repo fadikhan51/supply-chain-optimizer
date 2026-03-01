@@ -1,6 +1,5 @@
 from unittest.mock import MagicMock
 from app.services.ml_service import MLService
-import pytest
 
 def test_ml_service_mock_mode():
     service = MLService()

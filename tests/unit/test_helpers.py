@@ -1,11 +1,10 @@
 from app.helpers.inventory_helper import (
-    calculate_stockout_date,
     format_date,
     calculate_reorder_point,
     calculate_safety_stock,
     calculate_economic_order_quantity
 )
-from datetime import datetime, timedelta
+from datetime import datetime
 
 def test_calculate_reorder_point():
     assert calculate_reorder_point(10.0, 5, 20) == 70.0

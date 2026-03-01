@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.auth import router as auth_router
 from app.api.inventory import router as inventory_router
@@ -5,8 +6,6 @@ from app.db.session import engine, Base
 from app.core.logging_config import setup_logging
 
 setup_logging()
-
-from contextlib import asynccontextmanager
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

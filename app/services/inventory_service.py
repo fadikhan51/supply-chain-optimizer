@@ -24,7 +24,7 @@ class InventoryService:
         Calculate the predicted days until a product runs out of stock.
         Uses historical sales data and current inventory levels.
         """
-        product = await self.repo.db.get(Product, product_id)
+        product = await self.repo.get_product_with_inventory(product_id)
         if not product or not product.inventory:
             return None
         
@@ -44,4 +44,3 @@ class InventoryService:
             "days_until_stockout": prediction,
             "status": "critical" if prediction < 3 else "stable"
         }
-from app.models.models import Product
